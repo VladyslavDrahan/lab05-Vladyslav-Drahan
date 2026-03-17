@@ -4,6 +4,7 @@ from sqlmodel import Session, select
 from models.birds import Bird, BirdCreate
 from models.species import Species
 
+
 class BirdRepository:
     def __init__(self, session: Session):
         self.session = session
@@ -18,8 +19,8 @@ class BirdRepository:
         if not species:
             raise HTTPException(status_code=400, detail="Species does not exist")
 
-        item = Bird.model_validate(payload)
-        self.session.add(item)
+        bird = Bird.model_validate(payload)
+        self.session.add(bird)
         self.session.commit()
-        self.session.refresh(item)
-        return item
+        self.session.refresh(bird)
+        return bird
