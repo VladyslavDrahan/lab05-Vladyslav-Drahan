@@ -1,4 +1,4 @@
-from typing import List, Annotated
+from typing import Annotated
 from fastapi import APIRouter, Depends
 from sqlmodel import Session
 
@@ -8,20 +8,24 @@ from repositories.birds import BirdRepository
 
 router = APIRouter(prefix="/birds", tags=["Birds"])
 
+
 def get_bird_repository(
     session: Annotated[Session, Depends(get_session)],
 ) -> BirdRepository:
     return BirdRepository(session)
 
-@router.get("/", response_model=List[Bird])
+
+@router.get("/", response_model=list[Bird], status_code=200)
 async def get_birds(
-    repo: Annotated[BirdRepository, Depends(get_bird_repository)]
+    repo: Annotated[BirdRepository, Depends(get_bird_repository)],
 ):
     return repo.get_all()
+
 
 @router.post("/", response_model=Bird, status_code=201)
 async def add_bird(
     bird: BirdCreate,
-    repo: Annotated[BirdRepository, Depends(get_bird_repository)]
+    repo: Annotated[BirdRepository, Depends(get_bird_repository)],
 ):
+
     return repo.insert(bird)
